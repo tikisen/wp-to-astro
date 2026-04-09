@@ -1,0 +1,25 @@
+{
+  "name": "wp-to-astro",
+  "type": "module",
+  "version": "0.1.0",
+  "engines": { "node": ">=22.0.0" },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "extract-wp": "node --env-file=.env scripts/extract-wp.js",
+    "crawl": "node --env-file=.env scripts/crawl.js",
+    "screenshot": "node --env-file=.env scripts/screenshot.js",
+    "extract-styles": "node --env-file=.env scripts/extract-styles.js",
+    "download-assets": "node --env-file=.env scripts/download-assets.js",
+    "component-inventory": "node --env-file=.env scripts/component-inventory.js",
+    "extract:all": "npm run extract-wp && npm run crawl && npm run screenshot && npm run extract-styles && npm run download-assets && npm run component-inventory"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "css-tree": "^3.0.0",
+    "playwright": "^1.50.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}
