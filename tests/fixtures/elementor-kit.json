@@ -1,0 +1,12 @@
+{
+  "system_colors": [
+    { "id": "primary", "title": "Primary", "color": "#1B4FD8" },
+    { "id": "secondary", "title": "Secondary", "color": "#0F172A" },
+    { "id": "text", "title": "Text", "color": "#374151" },
+    { "id": "accent", "title": "Accent", "color": "#F59E0B" }
+  ],
+  "system_typography": [
+    { "id": "primary", "title": "Primary", "typography_font_family": "Inter", "typography_font_weight": "600" },
+    { "id": "secondary", "title": "Secondary", "typography_font_family": "Georgia", "typography_font_weight": "400" }
+  ]
+}
