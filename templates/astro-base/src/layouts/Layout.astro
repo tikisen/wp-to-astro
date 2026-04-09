@@ -1,0 +1,67 @@
+---
+import '../styles/fonts.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+}
+
+// SITE_URL, SITE_NAME, GTM_CONTAINER_ID, CF_ANALYTICS_TOKEN replaced per migration
+const SITE_URL = 'https://SITE_URL_PLACEHOLDER';
+const SITE_NAME = 'SITE_NAME_PLACEHOLDER';
+const GTM_ID = 'GTM_CONTAINER_ID_PLACEHOLDER'; // set to empty string '' to disable
+const CF_TOKEN = 'CF_ANALYTICS_TOKEN_PLACEHOLDER'; // set to empty string '' to disable
+
+const canonicalURL = new URL(Astro.url.pathname, SITE_URL);
+const {
+  title,
+  description = 'SITE_DESCRIPTION_PLACEHOLDER',
+  ogImage = '/images/OG-image.png',
+  ogType = 'website',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL.href} />
+    <meta property="og:title" content={`${title} | ${SITE_NAME}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:image" content={new URL(ogImage, SITE_URL).href} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | ${SITE_NAME}`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, SITE_URL).href} />
+    <link rel="icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <title>{title} | {SITE_NAME}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": SITE_NAME,
+      "url": SITE_URL,
+      "logo": `${SITE_URL}/logo/logo.png`,
+    })} />
+    {GTM_ID && (
+      <script set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`} />
+    )}
+    {CF_TOKEN && (
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token":"${CF_TOKEN}"}`}></script>
+    )}
+  </head>
+  <body>
+    {GTM_ID && (
+      <noscript set:html={`<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`} />
+    )}
+    <slot />
+  </body>
+</html>
