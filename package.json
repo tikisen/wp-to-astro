@@ -2,7 +2,9 @@
   "name": "wp-to-astro",
   "type": "module",
   "version": "0.1.0",
-  "engines": { "node": ">=22.0.0" },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,6 +17,7 @@
     "extract:all": "npm run extract-wp && npm run crawl && npm run screenshot && npm run extract-styles && npm run download-assets && npm run component-inventory"
   },
   "dependencies": {
+    "@mendable/firecrawl-js": "^4.18.1",
     "cheerio": "^1.0.0",
     "css-tree": "^3.0.0",
     "playwright": "^1.50.0"
