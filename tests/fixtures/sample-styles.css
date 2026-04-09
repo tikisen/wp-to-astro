@@ -1,0 +1,21 @@
+:root {
+  --color-primary: #1B4FD8;
+  --color-bg: #F8FAFC;
+  --font-sans: 'Inter', sans-serif;
+  --spacing-lg: 48px;
+}
+
+.hero {
+  background-image: url('https://example.com/uploads/hero-bg.jpg');
+  background-color: var(--color-bg);
+}
+
+.logo {
+  background-image: url("/uploads/logo.svg");
+}
+
+@font-face {
+  font-family: 'CustomFont';
+  font-weight: 400;
+  src: url('https://example.com/fonts/custom.woff2') format('woff2');
+}
