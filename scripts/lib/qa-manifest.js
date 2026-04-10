@@ -1,5 +1,8 @@
 // scripts/lib/qa-manifest.js
 
+const ORIGINAL_SCREENSHOT_DIR = 'extraction/screenshots';
+const GENERATED_SCREENSHOT_DIR = 'qa/screenshots';
+
 /**
  * Convert a URL pathname to the screenshot filename slug used by screenshot.js.
  * Matches the exact logic in scripts/screenshot.js.
@@ -26,8 +29,8 @@ export function buildManifest(sitemap, astroBaseUrl) {
       slug,
       wpUrl: url,
       astroUrl: `${base}${pathname}`,
-      original: `extraction/screenshots/${slug}.png`,
-      generated: `qa/screenshots/${slug}.png`,
+      original: `${ORIGINAL_SCREENSHOT_DIR}/${slug}.png`,
+      generated: `${GENERATED_SCREENSHOT_DIR}/${slug}.png`,
     };
   });
 }
