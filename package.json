@@ -14,6 +14,7 @@
     "extract-styles": "node --env-file=.env scripts/extract-styles.js",
     "download-assets": "node --env-file=.env scripts/download-assets.js",
     "component-inventory": "node --env-file=.env scripts/component-inventory.js",
+    "qa:visual": "node --env-file=.env scripts/qa-visual.js",
     "extract:all": "npm run extract-wp && npm run crawl && npm run screenshot && npm run extract-styles && npm run download-assets && npm run component-inventory"
   },
   "dependencies": {
