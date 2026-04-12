@@ -13,6 +13,20 @@ Reusable toolkit for migrating WordPress/Elementor sites to Astro + Cloudflare P
 2. Run `npm run extract:all` to populate `extraction/`
 3. Claude reads `extraction/` and generates the Astro project
 
+## Subagent orchestration
+
+Claude runs this migration as an orchestrator + subagents. Never do multi-file reads or multi-file writes inline — dispatch subagents.
+
+**Parallel patterns:**
+
+- **Reading extraction data** — 3 parallel Explore subagents: site structure, design tokens, screenshots
+- **Building pages** — one subagent per logical page group; orchestrator reconciles shared tokens and nav
+- **QA fixes** — one subagent per failing page, all in parallel; orchestrator re-runs `qa:visual` after all complete
+- **Video scraping** — Explore subagent fetches raw page HTML, extracts YouTube/Vimeo IDs by DOM position, returns mapping table; orchestrator applies it to `.astro` files
+- **Repo + deploy wiring** — single subagent for git init → GitHub → CF Pages → deploy.yml → secrets
+
+Every subagent prompt must end with: *"Return concise summaries with file paths, key decisions, and relevant excerpts. No raw file dumps."*
+
 ## Tests
 `npm test` — runs all unit tests in tests/
 
