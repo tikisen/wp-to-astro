@@ -1,0 +1,25 @@
+name: Performance Audit
+
+# Fires after every Cloudflare Pages deployment (staging or production)
+on:
+  deployment_status:
+
+jobs:
+  audit-psi:
+    name: PageSpeed Insights
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run PSI Audit
+        env:
+          PSI_SITE_URL: ${{ github.event.deployment_status.environment_url }}
+          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
+        run: node scripts/audit-psi.js
