@@ -12,4 +12,5 @@ jobs:
     uses: tikisen/tikisen/.github/workflows/audit-psi.yml@main
     with:
       site_url: ${{ vars.PSI_SITE_URL }}
-    secrets: inherit
+    secrets:
+      DISCORD_PSI_WEBHOOK: ${{ secrets.DISCORD_PSI_WEBHOOK }}
