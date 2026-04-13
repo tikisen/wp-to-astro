@@ -5,8 +5,8 @@ on:
   deployment_status:
 
 jobs:
-  audit:
-    name: PSI + Lighthouse Audit
+  audit-psi:
+    name: PageSpeed Insights
     if: github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
@@ -18,24 +18,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Lighthouse
-        run: npm install -g lighthouse
-
       - name: Run PSI Audit
         env:
           PSI_SITE_URL: ${{ github.event.deployment_status.environment_url }}
           PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
         run: node scripts/audit-psi.js
-
-      - name: Run Lighthouse Audit
-        env:
-          PSI_SITE_URL: ${{ github.event.deployment_status.environment_url }}
-        run: bash scripts/audit-lhci.sh
-
-      - name: Upload Lighthouse Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-reports-${{ github.run_id }}
-          path: /tmp/lhci-*.json
-          retention-days: 30
