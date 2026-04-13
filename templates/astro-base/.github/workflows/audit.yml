@@ -1,88 +1,12 @@
 name: Performance Audit
 
-# Fires after every Cloudflare Pages deployment (staging or production)
 on:
   deployment_status:
 
 jobs:
-  audit-psi:
-    name: PageSpeed Insights
+  audit:
     if: github.event.deployment_status.state == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.deployment.sha }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Run PSI Audit
-        id: psi
-        continue-on-error: true
-        env:
-          PSI_SITE_URL: ${{ github.event.deployment_status.environment_url }}
-          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
-        run: node scripts/audit-psi.js
-
-      - name: Notify Discord
-        if: always()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_PSI_WEBHOOK }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          PSI_OUTCOME: ${{ steps.psi.outcome }}
-        run: |
-          node -e "
-            const fs = require('fs');
-            let summary;
-            try {
-              summary = JSON.parse(fs.readFileSync('/tmp/psi-summary.json', 'utf8'));
-            } catch {
-              summary = { site: process.env.PSI_SITE_URL || 'unknown', passed: false, totalFailures: 1 };
-            }
-            const passed = summary.passed;
-            const emoji = passed ? '✅' : '❌';
-            const color = passed ? 5763719 : 15548997;
-            const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] || 'unknown';
-            const fields = [];
-            for (const strategy of ['mobile', 'desktop']) {
-              const s = summary[strategy];
-              if (!s) continue;
-              const scores = s.scores || {};
-              const cwv = s.cwv || {};
-              const lines = [
-                scores.performance != null ? 'Perf: **'+scores.performance+'**' : null,
-                scores.accessibility != null ? 'A11y: **'+scores.accessibility+'**' : null,
-                scores['best-practices'] != null ? 'BP: **'+scores['best-practices']+'**' : null,
-                scores.seo != null ? 'SEO: **'+scores.seo+'**' : null,
-                cwv.lcp ? 'LCP: '+cwv.lcp : null,
-                cwv.cls ? 'CLS: '+cwv.cls : null,
-                cwv.inp ? 'INP: '+cwv.inp : null,
-              ].filter(Boolean);
-              fields.push({ name: strategy.charAt(0).toUpperCase()+strategy.slice(1), value: lines.join('\n') || 'No data', inline: true });
-            }
-            if (!passed && summary.mobile?.failures?.length) {
-              fields.push({ name: '⚠️ Failures', value: [...(summary.mobile?.failures||[]), ...(summary.desktop?.failures||[])].join('\n') || 'See logs', inline: false });
-            }
-            const payload = {
-              embeds: [{
-                title: emoji + ' PSI Audit — ' + repo,
-                description: summary.site + '\n[View full report](' + process.env.RUN_URL + ')',
-                color,
-                fields,
-              }]
-            };
-            const https = require('https');
-            const body = JSON.stringify(payload);
-            const url = new URL(process.env.DISCORD_WEBHOOK);
-            const req = https.request({ hostname: url.hostname, path: url.pathname + url.search, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) } }, res => {
-              process.exit(res.statusCode >= 400 ? 1 : 0);
-            });
-            req.write(body);
-            req.end();
-          "
-
-      - name: Fail if PSI failed
-        if: steps.psi.outcome == 'failure'
-        run: exit 1
+    uses: tikisen/tikisen/.github/workflows/audit-psi.yml@main
+    with:
+      site_url: ${{ github.event.deployment_status.environment_url }}
+    secrets: inherit
