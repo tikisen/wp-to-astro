@@ -143,6 +143,7 @@ async function main() {
       totalFailures += printResults(label, metrics, summary);
     } catch (err) {
       console.error(`\n${RED}Error running ${strategy}: ${err.message}${RESET}`);
+      summary.error = (summary.error ? summary.error + '; ' : '') + `${strategy}: ${err.message.split('\n')[0]}`;
       totalFailures++;
     }
   }
