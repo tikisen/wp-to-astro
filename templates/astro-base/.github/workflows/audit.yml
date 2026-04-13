@@ -1,12 +1,15 @@
 name: Performance Audit
 
 on:
-  deployment_status:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   audit:
-    if: github.event.deployment_status.state == 'success'
+    if: github.event.workflow_run.conclusion == 'success'
     uses: tikisen/tikisen/.github/workflows/audit-psi.yml@main
     with:
-      site_url: ${{ github.event.deployment_status.environment_url }}
+      site_url: ${{ vars.PSI_SITE_URL }}
     secrets: inherit
