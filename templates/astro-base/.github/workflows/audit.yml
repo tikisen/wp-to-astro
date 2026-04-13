@@ -14,3 +14,4 @@ jobs:
       site_url: ${{ vars.PSI_SITE_URL }}
     secrets:
       DISCORD_PSI_WEBHOOK: ${{ secrets.DISCORD_PSI_WEBHOOK }}
+      PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
