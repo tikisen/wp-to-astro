@@ -32,3 +32,7 @@ Every subagent prompt must end with: *"Return concise summaries with file paths,
 
 ## Node version
 Node 22+ required. Uses native fetch and --env-file flag.
+
+## Secrets discipline (post-Phase-4 — authoritative)
+
+This repo uses `op://` references in `.env.template` resolved at runtime by `op run --env-file=.env.template -- <cmd>`. Plaintext `.env*` files are not permitted. For rotation, deploys, new credentials, or leak response → `~/.claude/skills/secrets.md`. Cloud env-store mappings (GHA / Vercel / CF Pages) live under `tikisen/.config/{gha,vercel,cf}-mappings/`. Notion runbook: search Resources DB for "Secrets-to-1Password Pipeline" (RES-52). Bundled `* Env` 1P items are archived; any older docs referencing them are stale.
